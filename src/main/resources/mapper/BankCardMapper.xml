@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.BankCardMapper">
+    <resultMap id="result" type="BankCardDomain">
+        <id property="cardId" column="CARD_ID"/>
+        <result column="CARD_TYPE" property="cardType"/>
+        <result column="BANK_CARD_NO" property="bankCardNo"/>
+        <result column="BANK_CARD_NO_HID" property="bankCardNoHid"/>
+        <result column="BANK_CARD_PASSWORD" property="bankCardPassword"/>
+        <result column="BANK_MOB_NO" property="bankMobNo"/>
+        <result column="BANK_MOB_NO_HID" property="bankMobNoHid"/>
+        <result column="BANK_CARD_BALANCE" property="bankCardBalance"/>
+        <result column="BANK_CARD_NAME" property="bankCardName"/>
+        <result column="BANK_CARD_NAME_HID" property="bankCardNameHid"/>
+        <result column="ERROR_NUMBER" property="errorNumber"/>
+    </resultMap>
+    <sql id="table">
+    BANK_CARD
+  </sql>
+    <sql id="columns">
+    CARD_ID,
+    CARD_TYPE,
+    BANK_CARD_NO,
+    BANK_CARD_NO_HID,
+    BANK_CARD_PASSWORD,
+    BANK_MOB_NO,
+    BANK_MOB_NO_HID,
+    BANK_CARD_BALANCE,
+    BANK_CARD_NAME,
+    BANK_CARD_NAME_HID,
+    ERROR_NUMBER
+  </sql>
+    <insert id="add" parameterType="BankCardDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{cardId,jdbcType=VARCHAR},
+            #{cardType,jdbcType=VARCHAR},
+            #{bankCardNo,jdbcType=VARCHAR},
+            #{bankCardNoHid,jdbcType=VARCHAR},
+            #{bankCardPassword,jdbcType=VARCHAR},
+            #{bankMobNo,jdbcType=VARCHAR},
+            #{bankMobNoHid,jdbcType=VARCHAR},
+            #{bankCardBalance,jdbcType=DECIMAL},
+            #{bankCardName,jdbcType=VARCHAR},
+            #{bankCardNameHid,jdbcType=VARCHAR},
+            #{errorNumber,jdbcType=INTEGER},
+        </trim>
+    </insert>
+
+    <select id="find" parameterType="BankCardCondition" resultMap="result">
+        select
+        <include refid="columns" />
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <select id="count" parameterType="BankCardCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <select id="findOne" parameterType="BankCardDomain" resultMap="result">
+        select
+        <include refid="columns" />
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <select id="findOneById" parameterType="BankCardDomain" resultMap="result">
+        select
+        <include refid="columns" />
+        from
+        <include refid="table" />
+        where BANK_CARD_NO = #{bankCardNo}
+    </select>
+
+    <update id="updateById" parameterType="BankCardDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="bankCardBalance != null and bankCardBalance != ''">BANK_CARD_BALANCE = #{bankCardBalance},</if>
+            <if test="errorNumber != null and errorNumber != ''">ERROR_NUMBER = #{errorNumber},</if>
+        </set>
+        where BANK_CARD_NO = #{bankCardNo}
+    </update>
+
+    <update id="updateAll" parameterType="BankCardDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="errorNumber != null ">ERROR_NUMBER = #{errorNumber},</if>
+        </set>
+    </update>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="bankCardNo != null and bankCardNo != '' ">AND BANK_CARD_NO = #{bankCardNo}</if>
+            <if test="bankMobNo != null and bankMobNo != '' ">AND BANK_MOB_NO = #{bankMobNo}</if>
+            <if test="cardType != null and cardType != ''">AND CARD_TYPE = #{cardType}</if>
+            <if test="bankCardName != null and bankCardName != ''">AND BANK_CARD_NAME = #{bankCardName}</if>
+            <if test="bankCardPassword != null and bankCardPassword != ''">AND BANK_CARD_PASSWORD = #{bankCardPassword}</if>
+        </where>
+    </sql>
+</mapper>

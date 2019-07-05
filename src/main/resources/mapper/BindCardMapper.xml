@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.BindCardMapper">
+    <resultMap id="result" type="BindCardDomain">
+        <id property="bindId" column="BIND_ID"/>
+        <result column="SIGN_DATE" property="signDate"/>
+        <result column="IS_DEFAULT" property="isDefault"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="BANK_MOB_NO" property="bankMobNo"/>
+        <result column="BANK_MOB_NO_HID" property="bankMobNoHid"/>
+        <result column="CARD_TYPE" property="cardType"/>
+        <result column="BANK_CARD_NO" property="bankCardNo"/>
+        <result column="BANK_CARD_NO_HID" property="bankCardNoHid"/>
+        <result column="BANK_CARD_NAME" property="bankCardName"/>
+        <result column="BANK_CARD_NAME_HID" property="bankCardNameHid"/>
+    </resultMap>
+    <sql id="table">
+    BIND_CARD
+  </sql>
+    <sql id="columns">
+    BIND_ID,
+    SIGN_DATE,
+    IS_DEFAULT,
+    USER_ID,
+    BANK_MOB_NO,
+    BANK_MOB_NO_HID,
+    CARD_TYPE,
+    BANK_CARD_NO,
+    BANK_CARD_NO_HID,
+    BANK_CARD_NAME,
+    BANK_CARD_NAME_HID
+  </sql>
+    <insert id="add" parameterType="BindCardDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{bindId,jdbcType=VARCHAR},
+            #{signDate,jdbcType=TIMESTAMP},
+            #{isDefault,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR},
+            #{bankMobNo,jdbcType=VARCHAR},
+            #{bankMobNoHid,jdbcType=VARCHAR},
+            #{cardType,jdbcType=VARCHAR},
+            #{bankCardNo,jdbcType=VARCHAR},
+            #{bankCardNoHid,jdbcType=VARCHAR},
+            #{bankCardName,jdbcType=VARCHAR},
+            #{bankCardNameHid,jdbcType=VARCHAR},
+        </trim>
+    </insert>
+
+    <update id="updateByCardId" parameterType="String">
+        update
+        <include refid="table"/>
+        set
+        IS_DEFAULT = 'Y'
+        where BANK_CARD_NO = #{bankCardNo}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="table"/>
+        where BANK_CARD_NO = #{bankCardNo}
+    </delete>
+    <select id="find" parameterType="BindCardCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <select id="count" parameterType="BindCardCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="userId != null and userId != '' ">AND USER_ID = #{userId}</if>
+            <if test="bankCardNo != null and bankCardNo != '' ">AND BANK_CARD_NO = #{bankCardNo}</if>
+            <if test="cardType != null and cardType != '' ">AND CARD_TYPE = #{cardType}</if>
+            <if test="bankMobNo != null and bankMobNo != '' ">AND BANK_MOB_NO = #{bankMobNo}</if>
+            <if test="bankCardName != null and bankCardName != '' ">AND BANK_CARD_NAME = #{bankCardName}</if>
+        </where>
+    </sql>
+
+    <update id="updateByUserId" parameterType="String">
+        update
+        <include refid="table"/>
+        set
+        IS_DEFAULT = 'N'
+        where USER_ID = #{userId}
+    </update>
+
+    <select id="findOneById" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where
+        BANK_CARD_NO = #{bankCardNo}
+    </select>
+
+    <select id="findAllByUserId" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where
+        USER_ID = #{userId}
+    </select>
+
+    <select id="findAllByUserIdAndDefault" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where
+        USER_ID = #{userId} and IS_DEFAULT = 'Y'
+    </select>
+</mapper>

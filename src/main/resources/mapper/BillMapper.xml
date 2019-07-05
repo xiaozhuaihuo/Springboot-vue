@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.BillMapper">
+    <resultMap id="result" type="BillDomain">
+        <id property="billNo" column="BILL_NO"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="BILL_REG_DATE" property="billRegisterDate"/>
+        <result column="BILL_FIN_DATE" property="billFinalRepayDate"/>
+        <result column="BILL_STATUS" property="billStatus"/>
+        <result column="STAGES_NUMBER" property="stagesNumber"/>
+        <result column="BILL_TOT_AMT" property="billTotalAmount"/>
+        <result column="BILL_PRIN_AMT" property="billPrincipalAmount"/>
+        <result column="BILL_INT_AMT" property="billInterestAmount"/>
+        <result column="BILL_FINE_AMT" property="billFineAmount"/>
+        <result column="BILL_FEE_AMT" property="billFeeAmount"/>
+        <result column="REPAY_TOT_AMT" property="repayTotalAmount"/>
+        <result column="REPAY_PRIN_AMT" property="repayPrincipalAmount"/>
+        <result column="REPAY_INT_AMT" property="repayInterestAmount"/>
+        <result column="REPAY_FINE_AMT" property="repayFineAmount"/>
+        <result column="REPAY_FEE_AMT" property="repayFeeAmount"/>
+        <result column="REPAY_STAGES" property="repayStagesNumber"/>
+        <result column="IS_ADVANCE" property="isAdvanceSettle"/>
+        <result column="REPAY_METHOD" property="repayMethod"/>
+        <result column="IS_AUTO_REPAY" property="isAutoRepay"/>
+        <result column="ADVANCE_REPAY_AMT" property="advanceRepayAmt"/>
+        <result column="REPAY_DATE" property="repayDate"/>
+    </resultMap>
+    <sql id="table">
+    BILL
+  </sql>
+    <sql id="columns">
+    BILL_NO,
+    USER_ID,
+    BILL_REG_DATE,
+    BILL_FIN_DATE,
+    BILL_STATUS,
+    STAGES_NUMBER,
+    BILL_TOT_AMT,
+    BILL_PRIN_AMT,
+    BILL_INT_AMT,
+    BILL_FINE_AMT,
+    BILL_FEE_AMT,
+    REPAY_TOT_AMT,
+    REPAY_PRIN_AMT,
+    REPAY_INT_AMT,
+    REPAY_FINE_AMT,
+    REPAY_FEE_AMT,
+    REPAY_STAGES,
+    IS_ADVANCE,
+    REPAY_METHOD,
+    IS_AUTO_REPAY,
+    ADVANCE_REPAY_AMT,
+    REPAY_DATE
+  </sql>
+    <insert id="add" parameterType="BillDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{billNo,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR},
+            #{billRegisterDate,jdbcType=TIMESTAMP},
+            #{billFinalRepayDate,jdbcType=TIMESTAMP},
+            #{billStatus,jdbcType=VARCHAR},
+            #{stagesNumber,jdbcType=INTEGER},
+            #{billTotalAmount,jdbcType=DECIMAL},
+            #{billPrincipalAmount,jdbcType=DECIMAL},
+            #{billInterestAmount,jdbcType=DECIMAL},
+            #{billFineAmount,jdbcType=DECIMAL},
+            #{billFeeAmount,jdbcType=DECIMAL},
+            #{repayTotalAmount,jdbcType=DECIMAL},
+            #{repayPrincipalAmount,jdbcType=DECIMAL},
+            #{repayInterestAmount,jdbcType=DECIMAL},
+            #{repayFineAmount,jdbcType=DECIMAL},
+            #{repayFeeAmount,jdbcType=DECIMAL},
+            #{repayStagesNumber,jdbcType=INTEGER},
+            #{isAdvanceSettle,jdbcType=VARCHAR},
+            #{repayMethod,jdbcType=VARCHAR},
+            #{isAutoRepay,jdbcType=VARCHAR},
+            #{advanceRepayAmt,jdbcType=DECIMAL},
+            #{repayDate,jdbcType=TIMESTAMP},
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="BillDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="billStatus != null ">BILL_STATUS = #{billStatus},</if>
+            <if test="billTotalAmount != null ">BILL_TOT_AMT = #{billTotalAmount},</if>
+            <if test="billPrincipalAmount != null ">BILL_PRIN_AMT = #{billPrincipalAmount},</if>
+            <if test="billInterestAmount != null ">BILL_INT_AMT = #{billInterestAmount},</if>
+            <if test="billFineAmount != null ">BILL_FINE_AMT = #{billFineAmount},</if>
+            <if test="billFeeAmount != null ">BILL_FEE_AMT = #{billFeeAmount},</if>
+            <if test="repayTotalAmount != null ">REPAY_TOT_AMT = #{repayTotalAmount},</if>
+            <if test="repayPrincipalAmount != null ">REPAY_PRIN_AMT = #{repayPrincipalAmount},</if>
+            <if test="repayInterestAmount != null ">REPAY_INT_AMT = #{repayInterestAmount},</if>
+            <if test="repayFineAmount != null ">REPAY_FINE_AMT = #{repayFineAmount},</if>
+            <if test="repayFeeAmount != null ">REPAY_FEE_AMT = #{repayFeeAmount},</if>
+            <if test="repayStagesNumber != null ">REPAY_STAGES = #{repayStagesNumber},</if>
+            <if test="isAdvanceSettle != null ">IS_ADVANCE = #{isAdvanceSettle},</if>
+            <if test="isAutoRepay != null ">IS_AUTO_REPAY = #{isAutoRepay},</if>
+            <if test="advanceRepayAmt != null ">ADVANCE_REPAY_AMT = #{advanceRepayAmt},</if>
+            <if test="repayDate != null ">REPAY_DATE = #{repayDate},</if>
+        </set>
+        where BILL_NO = #{billNo}
+    </update>
+
+    <update id="updateBySubBill">
+        update BILL b
+        set
+        b.BILL_TOT_AMT = (select sum(p.BILL_TOT_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.BILL_FINE_AMT = (select sum(p.BILL_FINE_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.BILL_FEE_AMT = (select sum(p.BILL_FEE_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.REPAY_TOT_AMT = (select sum(p.REPAY_TOT_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.REPAY_PRIN_AMT = (select sum(p.REPAY_PRIN_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.REPAY_INT_AMT = (select sum(p.REPAY_INT_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.REPAY_FINE_AMT = (select sum(p.REPAY_FINE_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.REPAY_FEE_AMT = (select sum(p.REPAY_FEE_AMT) from PER_BILL p where b.BILL_NO = p.BILL_NO),
+        b.REPAY_STAGES = (select count(*) from PER_BILL p where b.BILL_NO = p.BILL_NO and p.PER_STATUS = '1')
+        where b.BILL_STATUS = '0'
+    </update>
+
+    <update id="updateStatus">
+        update
+        <include refid="table"/>
+        set
+        BILL_STATUS = '1'
+        where STAGES_NUMBER = REPAY_STAGES
+    </update>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="billNo != null and billNo != '' ">AND BILL_NO = #{billNo}</if>
+            <if test="userId != null and userId != '' ">AND USER_ID = #{userId}</if>
+            <if test="billStatus != null and billStatus != ''">AND BILL_STATUS = #{billStatus}</if>
+            <if test="repayMethod != null and repayMethod != ''">AND REPAY_METHOD = #{repayMethod}</if>
+        </where>
+    </sql>
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="table"/>
+        where UUID = #{id}
+    </delete>
+    <delete id="deleteBatchIds">
+        DELETE FROM
+        <include refid="table"/>
+        where id in
+        <foreach collection="pkList" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </delete>
+    <select id="findOneById" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where BILL_NO = #{billNo}
+    </select>
+    <select id="find" parameterType="BillCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <select id="count" parameterType="BillCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <select id="countAmtByUserId" parameterType="String" resultType="com.fengyaodong.bloan.model.vo.SumAmtVo">
+        select
+        sum(BILL_TOT_AMT) totalAmount, sum(REPAY_TOT_AMT) repayTotalAmount
+        from
+        <include refid="table"/>
+        where USER_ID = #{userId} and BILL_STATUS = '0'
+    </select>
+
+    <update id="autoRepayByUserId" parameterType="String">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="isAutoRepay != null ">IS_AUTO_REPAY = #{isAutoRepay},</if>
+        </set>
+        where USER_ID = #{userId}
+    </update>
+</mapper>

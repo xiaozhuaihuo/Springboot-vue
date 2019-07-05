@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.PerBillMapper">
+    <resultMap id="result" type="PerBillDomain">
+        <id property="perBillNo" column="PER_BILL_NO"/>
+        <result column="BILL_NO" property="billNo"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="PER_START_DATE" property="perStartDate"/>
+        <result column="PER_END_DATE" property="perEndDate"/>
+        <result column="PER_STATUS" property="perStatus"/>
+        <result column="CURRENT_STAGE" property="currentStage"/>
+        <result column="BILL_TOT_AMT" property="perBillTotalAmount"/>
+        <result column="BILL_PRIN_AMT" property="perBillPrincipalAmount"/>
+        <result column="BILL_INT_AMT" property="perBillInterestAmount"/>
+        <result column="BILL_FINE_AMT" property="perBillFineAmount"/>
+        <result column="BILL_FEE_AMT" property="perBillFeeAmount"/>
+        <result column="REPAY_TOT_AMT" property="perRepayTotalAmount"/>
+        <result column="REPAY_PRIN_AMT" property="perRepayPrincipalAmount"/>
+        <result column="REPAY_INT_AMT" property="perRepayInterestAmount"/>
+        <result column="REPAY_FINE_AMT" property="perRepayFineAmount"/>
+        <result column="REPAY_FEE_AMT" property="perRepayFeeAmount"/>
+        <result column="IS_OVERDUE" property="isOverdue"/>
+        <result column="OVERDUE_DAY" property="overdueDay"/>
+        <result column="PER_REPAY_DATE" property="perRepayDate"/>
+        <result column="IS_ADVANCE" property="isAdvanceSettle"/>
+        <result column="IS_AUTO_REPAY" property="isAutoRepay"/>
+    </resultMap>
+    <sql id="table">
+    PER_BILL
+  </sql>
+    <sql id="columns">
+    PER_BILL_NO,
+    BILL_NO,
+    USER_ID,
+    PER_START_DATE,
+    PER_END_DATE,
+    PER_STATUS,
+    CURRENT_STAGE,
+    BILL_TOT_AMT,
+    BILL_PRIN_AMT,
+    BILL_INT_AMT,
+    BILL_FINE_AMT,
+    BILL_FEE_AMT,
+    REPAY_TOT_AMT,
+    REPAY_PRIN_AMT,
+    REPAY_INT_AMT,
+    REPAY_FINE_AMT,
+    REPAY_FEE_AMT,
+    IS_OVERDUE,
+    OVERDUE_DAY,
+    PER_REPAY_DATE,
+    IS_ADVANCE,
+    IS_AUTO_REPAY
+  </sql>
+    <insert id="add" parameterType="PerBillDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{perBillNo,jdbcType=VARCHAR},
+            #{billNo,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR},
+            #{perStartDate,jdbcType=TIMESTAMP},
+            #{perEndDate,jdbcType=TIMESTAMP},
+            #{perStatus,jdbcType=VARCHAR},
+            #{currentStage,jdbcType=INTEGER},
+            #{perBillTotalAmount,jdbcType=DECIMAL},
+            #{perBillPrincipalAmount,jdbcType=DECIMAL},
+            #{perBillInterestAmount,jdbcType=DECIMAL},
+            #{perBillFineAmount,jdbcType=DECIMAL},
+            #{perBillFeeAmount,jdbcType=DECIMAL},
+            #{perRepayTotalAmount,jdbcType=DECIMAL},
+            #{perRepayPrincipalAmount,jdbcType=DECIMAL},
+            #{perRepayInterestAmount,jdbcType=DECIMAL},
+            #{perRepayFineAmount,jdbcType=DECIMAL},
+            #{perRepayFeeAmount,jdbcType=DECIMAL},
+            #{isOverdue,jdbcType=VARCHAR},
+            #{overdueDay,jdbcType=INTEGER},
+            #{perRepayDate,jdbcType=TIMESTAMP},
+            #{isAdvanceSettle,jdbcType=VARCHAR},
+            #{isAutoRepay,jdbcType=VARCHAR},
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="PerBillDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="perStatus != null ">PER_STATUS = #{perStatus},</if>
+            <if test="perBillTotalAmount != null ">BILL_TOT_AMT = #{perBillTotalAmount},</if>
+            <if test="perBillPrincipalAmount != null ">BILL_PRIN_AMT = #{perBillPrincipalAmount},</if>
+            <if test="perBillInterestAmount != null ">BILL_INT_AMT = #{perBillInterestAmount},</if>
+            <if test="perBillFineAmount != null ">BILL_FINE_AMT = #{perBillFineAmount},</if>
+            <if test="perBillFeeAmount != null ">BILL_FEE_AMT = #{perBillFeeAmount},</if>
+            <if test="perRepayTotalAmount != null ">REPAY_TOT_AMT = #{perRepayTotalAmount},</if>
+            <if test="perRepayPrincipalAmount != null ">REPAY_PRIN_AMT = #{perRepayPrincipalAmount},</if>
+            <if test="perRepayInterestAmount != null ">REPAY_INT_AMT = #{perRepayInterestAmount},</if>
+            <if test="perRepayFineAmount != null ">REPAY_FINE_AMT = #{perRepayFineAmount},</if>
+            <if test="perRepayFeeAmount != null ">REPAY_FEE_AMT = #{perRepayFeeAmount},</if>
+            <if test="isOverdue != null ">IS_OVERDUE = #{isOverdue},</if>
+            <if test="overdueDay != null ">OVERDUE_DAY = #{overdueDay},</if>
+            <if test="perRepayDate != null ">PER_REPAY_DATE = #{perRepayDate},</if>
+            <if test="isAdvanceSettle != null ">IS_ADVANCE = #{isAdvanceSettle},</if>
+            <if test="isAutoRepay != null ">IS_AUTO_REPAY = #{isAutoRepay},</if>
+        </set>
+        where PER_BILL_NO = #{perBillNo}
+    </update>
+
+    <update id="updateByBillNo" parameterType="PerBillDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="perStatus != null ">PER_STATUS = #{perStatus},</if>
+            <if test="perRepayDate != null ">PER_REPAY_DATE = #{perRepayDate},</if>
+            <if test="isAdvanceSettle != null ">IS_ADVANCE = #{isAdvanceSettle},</if>
+            <if test="isAutoRepay != null ">IS_AUTO_REPAY = #{isAutoRepay},</if>
+        </set>
+        where BILL_NO = #{billNo}
+    </update>
+
+    <select id="findAllByDate" parameterType="perBillCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where (#{date} between PER_START_DATE and PER_END_DATE or IS_OVERDUE = '1') and PER_STATUS = '0' and USER_ID =
+        #{userId}
+    </select>
+
+    <select id="findAutoRepayByDate" parameterType="Date" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where (#{date} between PER_START_DATE and PER_END_DATE or IS_OVERDUE = '1') and PER_STATUS = '0' and
+        IS_AUTO_REPAY = '1'
+    </select>
+
+    <select id="findNotAutoByDate" parameterType="Date" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where #{date} between PER_START_DATE and PER_END_DATE and PER_STATUS = '0' and IS_AUTO_REPAY = '0'
+    </select>
+
+    <select id="findAllByDateBefore" parameterType="Date" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where PER_END_DATE &lt;#{date} and PER_STATUS = '0'
+    </select>
+
+    <select id="countTotAmtByDate" parameterType="perBillCondition" resultType="BigDecimal">
+        select
+        sum(BILL_TOT_AMT)
+        from
+        <include refid="table"/>
+        where (#{date} between PER_START_DATE and PER_END_DATE or IS_OVERDUE = '1') and PER_STATUS = '0' and USER_ID =
+        #{userId}
+    </select>
+
+    <select id="countAllByOverdue" parameterType="String" resultType="Integer">
+        select
+        count(PER_BILL_NO)
+        from
+        <include refid="table"/>
+        where BILL_NO = #{billNo} and PER_STATUS = '0' and IS_OVERDUE = '1'
+    </select>
+
+
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="table"/>
+        where UUID = #{id}
+    </delete>
+    <delete id="deleteBatchIds">
+        DELETE FROM
+        <include refid="table"/>
+        where id in
+        <foreach collection="pkList" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </delete>
+    <select id="findOneById" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where PER_BILL_NO = #{perBillNo}
+    </select>
+
+    <select id="countOverdue" resultType="com.fengyaodong.bloan.model.vo.CountOverdueVo">
+        select u.USER_ID userId, nvl(overdueNumber,0) as overdueNumber
+        from USER_INFO u
+        left join (select b.USER_ID ,count(*) overdueNumber
+        from PER_BILL b
+        where IS_OVERDUE = '1' and PER_STATUS = '0' group by b.USER_ID) temp on u.USER_ID = temp.USER_ID
+    </select>
+
+    <update id="autoRepayByUserId" parameterType="String">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="isAutoRepay != null ">IS_AUTO_REPAY = #{isAutoRepay},</if>
+        </set>
+        where USER_ID = #{userId}
+    </update>
+
+    <select id="findClearBill" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where USER_ID = #{userId} and PER_STATUS = '1' order by PER_REPAY_DATE desc
+    </select>
+
+    <select id="find" parameterType="PerBillCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <select id="count" parameterType="PerBillCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="perBillNo != null and perBillNo != '' ">AND PER_BILL_NO = #{perBillNo}</if>
+            <if test="billNo != null and billNo != '' ">AND BILL_NO = #{billNo}</if>
+            <if test="userId != null and userId != '' ">AND USER_ID = #{userId}</if>
+            <if test="perStatus != null and perStatus != ''">AND PER_STATUS = #{perStatus}</if>
+        </where>
+    </sql>
+</mapper>

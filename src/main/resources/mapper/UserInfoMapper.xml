@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.UserInfoMapper">
+    <resultMap id="result" type="UserInfoDomain">
+        <id property="userId" column="USER_ID"/>
+        <result column="LOGIN_NO" property="loginNo"/>
+        <result column="PASSWORD" property="password"/>
+        <result column="USER_NAME" property="userName"/>
+        <result column="USER_NAME_HID" property="userNameHid"/>
+        <result column="USER_SEX" property="userSex"/>
+        <result column="USER_BIRTH_DATE" property="userBirthDate"/>
+        <result column="USER_ID_NO" property="userIdNo"/>
+        <result column="USER_ID_NO_HID" property="userIdNoHid"/>
+        <result column="USER_MOBILE_NO" property="userMobileNo"/>
+        <result column="USER_MOBILE_NO_HID" property="userMobileNoHid"/>
+        <result column="USER_ADDRESS" property="userAddress"/>
+        <result column="USER_MAIL" property="userMail"/>
+        <result column="USER_MAIL_HID" property="userMailHid"/>
+        <result column="REGISTER_DATE" property="registerDate"/>
+        <result column="UPDATE_DATE" property="updateDate"/>
+        <result column="CREDIT_SCORE" property="creditScore"/>
+        <result column="IS_AUTO_REPAY" property="isAutoRepay"/>
+    </resultMap>
+    <sql id="table">
+    USER_INFO
+  </sql>
+    <sql id="columns">
+    USER_ID,
+    LOGIN_NO,
+    PASSWORD,
+    USER_NAME,
+    USER_NAME_HID,
+    USER_SEX,
+    USER_BIRTH_DATE,
+    USER_ID_NO,
+    USER_ID_NO_HID,
+    USER_MOBILE_NO,
+    USER_MOBILE_NO_HID,
+    USER_ADDRESS,
+    USER_MAIL,
+    USER_MAIL_HID,
+    REGISTER_DATE,
+    UPDATE_DATE,
+    CREDIT_SCORE,
+    IS_AUTO_REPAY
+  </sql>
+    <insert id="add" parameterType="UserInfoDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{userId,jdbcType=VARCHAR},
+            #{loginNo,jdbcType=VARCHAR},
+            #{password,jdbcType=VARCHAR},
+            #{userName,jdbcType=VARCHAR},
+            #{userNameHid,jdbcType=VARCHAR},
+            #{userSex,jdbcType=VARCHAR},
+            #{userBirthDate,jdbcType=VARCHAR},
+            #{userIdNo,jdbcType=VARCHAR},
+            #{userIdNoHid,jdbcType=VARCHAR},
+            #{userMobileNo,jdbcType=VARCHAR},
+            #{userMobileNoHid,jdbcType=VARCHAR},
+            #{userAddress,jdbcType=VARCHAR},
+            #{userMail,jdbcType=VARCHAR},
+            #{userMailHid,jdbcType=VARCHAR},
+            #{registerDate,jdbcType=TIMESTAMP},
+            #{updateDate,jdbcType=TIMESTAMP},
+            #{creditScore,jdbcType=INTEGER},
+            #{isAutoRepay,jdbcType=VARCHAR}
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="UserInfoDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="password != null and password != ''">PASSWORD = #{password},</if>
+            <if test="userName != null and userName != ''">USER_NAME = #{userName},</if>
+            <if test="userNameHid != null and userNameHid != ''">USER_NAME_HID = #{userNameHid},</if>
+            <if test="userBirthDate != null ">USER_BIRTH_DATE = #{userBirthDate},</if>
+            <if test="userIdNo != null and userIdNo != ''">USER_ID_NO = #{userIdNo},</if>
+            <if test="userIdNoHid != null and userIdNoHid  != '' ">USER_ID_NO_HID = #{userIdNoHid},</if>
+            <if test="userMobileNo != null and userMobileNo != ''">USER_MOBILE_NO = #{userMobileNo},</if>
+            <if test="userMobileNoHid != null and userMobileNoHid  != ''">USER_MOBILE_NO_HID = #{userMobileNoHid},</if>
+            <if test="userAddress != null and userAddress  != ''">USER_ADDRESS = #{userAddress},</if>
+            <if test="userMail != null and userMail != ''">USER_MAIL = #{userMail},</if>
+            <if test="userMailHid != null and userMailHid  != ''">USER_MAIL_HID = #{userMailHid},</if>
+            <if test="updateDate != null ">UPDATE_DATE = #{updateDate},</if>
+            <if test="creditScore != null ">CREDIT_SCORE = #{creditScore},</if>
+            <if test="isAutoRepay != null and isAutoRepay != ''">IS_AUTO_REPAY = #{isAutoRepay},</if>
+        </set>
+        where USER_ID = #{userId}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="table"/>
+        where UUID = #{id}
+    </delete>
+    <delete id="deleteBatchIds">
+        DELETE FROM
+        <include refid="table"/>
+        where id in
+        <foreach collection="pkList" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </delete>
+    <select id="findOneById" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where USER_ID = #{userId}
+    </select>
+
+    <select id="find" parameterType="UserInfoCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <select id="count" parameterType="UserInfoCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="userId != null and userId != '' ">AND USER_ID = #{userId}</if>
+            <if test="loginNo != null and loginNo != '' ">AND LOGIN_NO = #{loginNo}</if>
+            <if test="password != null and password != '' ">AND PASSWORD = #{password}</if>
+        </where>
+    </sql>
+
+    <select id="findOneByLoginNo" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where LOGIN_NO = #{loginNo}
+    </select>
+</mapper>

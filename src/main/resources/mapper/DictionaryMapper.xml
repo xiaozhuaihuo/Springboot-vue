@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.DictionaryMapper">
+    <resultMap id="result" type="DictionaryDomain">
+        <id property="uuid" column="UUID"/>
+        <result column="ITEM_CODE" property="itemCode"/>
+        <result column="ITEM_NAME" property="itemName"/>
+        <result column="ITEM_VALUE" property="itemValue"/>
+        <result column="ITEM_DESC" property="itemDesc"/>
+        <result column="SORT" property="sort"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CREATE_USER" property="createUser"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+        <result column="UPDATE_USER" property="updateUser"/>
+        <result column="PARENT_ID" property="parentId"/>
+        <result column="DEPTH" property="depth"/>
+    </resultMap>
+    <sql id="table">
+    DICTIONARY
+  </sql>
+    <sql id="columns">
+    UUID,
+    ITEM_CODE,
+    ITEM_NAME,
+    ITEM_VALUE,
+    ITEM_DESC,
+    SORT,
+    CREATE_TIME,
+    CREATE_USER,
+    UPDATE_TIME,
+    UPDATE_USER,
+    PARENT_ID,
+    DEPTH
+  </sql>
+
+    <select id="findOneById" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where RATE_NAME = #{rateName}
+    </select>
+    <select id="find" parameterType="RateCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+    </select>
+
+    <select id="findValueByCode" parameterType="String" resultType="DECIMAL">
+        select
+        ITEM_VALUE
+        from
+        <include refid="table"/>
+        where ITEM_CODE = #{itemCode}
+    </select>
+
+    <select id="findByParentItemCode" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where PARENT_ID in (
+        select UUID from
+        <include refid="table"/>
+        where ITEM_CODE = #{itemCode}
+        )
+        order by SORT
+    </select>
+</mapper>

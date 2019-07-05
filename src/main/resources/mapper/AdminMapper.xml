@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.AdminMapper">
+    <resultMap id="result" type="AdminDomain">
+        <id property="adminId" column="ADMIN_ID"/>
+        <result column="ADMIN_LOGIN_NO" property="adminLoginNo"/>
+        <result column="ADMIN_NAME" property="adminName"/>
+        <result column="ADMIN_PASSWORD" property="adminPassword"/>
+        <result column="ADMIN_SURPLUS_AMT" property="adminSurplusAmt"/>
+    </resultMap>
+    <sql id="table">
+    ADMIN
+  </sql>
+    <sql id="columns">
+    ADMIN_ID,
+    ADMIN_LOGIN_NO,
+    ADMIN_NAME,
+    ADMIN_PASSWORD,
+    ADMIN_SURPLUS_AMT
+  </sql>
+
+    <update id="updateById" parameterType="AdminDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="adminPassword != null ">ADMIN_PASSWORD = #{adminPassword},</if>
+            <if test="adminSurplusAmt != null ">ADMIN_SURPLUS_AMT = #{adminSurplusAmt},</if>
+        </set>
+        where ADMIN_LOGIN_NO = #{adminLoginNo}
+    </update>
+
+    <select id="find" parameterType="AdminDomain" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="adminLoginNo != null and adminLoginNo != '' ">AND ADMIN_LOGIN_NO = #{adminLoginNo}</if>
+            <if test="adminPassword != null and adminPassword != '' ">AND ADMIN_PASSWORD = #{adminPassword}</if>
+        </where>
+    </sql>
+
+    <select id="findOneById" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where ADMIN_ID = #{adminId}
+    </select>
+
+    <select id="findOneByLoginNo" parameterType="String" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where
+        ADMIN_LOGIN_NO = #{adminLoginNo}
+    </select>
+</mapper>

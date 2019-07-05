@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.quartz.TaskDao">
+    <resultMap id="result" type="com.fengyaodong.bloan.quartz.ScheduleJob">
+        <id property="jobId" column="JOB_ID"/>
+        <result column="JOB_NAME" property="jobName"/>
+        <result column="JOB_GROUP" property="jobGroup"/>
+        <result column="JOB_STATUS" property="jobStatus"/>
+        <result column="CRON_EXPRESSION" property="cronExpression"/>
+        <result column="DESCRIPTION" property="description"/>
+        <result column="BEAN_CLASS" property="beanClass"/>
+        <result column="IS_CONCURRENT" property="isConcurrent"/>
+        <result column="SPRING_ID" property="springId"/>
+        <result column="METHOD_NAME" property="methodName"/>
+    </resultMap>
+    <sql id="table">
+    QUARTZ
+  </sql>
+    <sql id="columns">
+    JOB_ID,
+    JOB_NAME,
+    JOB_GROUP,
+    JOB_STATUS,
+    CRON_EXPRESSION,
+    DESCRIPTION,
+    BEAN_CLASS,
+    IS_CONCURRENT,
+    SPRING_ID,
+    METHOD_NAME
+  </sql>
+
+    <update id="updateJobStatusById">
+        update
+        <include refid="table"/>
+        set
+        JOB_STATUS = #{sts}
+        where JOB_ID = #{jobId}
+    </update>
+
+    <update id="updateJobCronById">
+        update
+        <include refid="table"/>
+        set
+        CRON_EXPRESSION = #{cron}
+        where JOB_ID = #{jobId}
+    </update>
+
+    <select id="getAllJobs" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+    </select>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="adminLoginNo != null and adminLoginNo != '' ">AND ADMIN_LOGIN_NO = #{adminLoginNo}</if>
+            <if test="adminPassword != null and adminPassword != '' ">AND ADMIN_PASSWORD = #{adminPassword}</if>
+        </where>
+    </sql>
+
+    <select id="getJobById" parameterType="java.lang.Long" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        where JOB_ID = #{jobId}
+    </select>
+
+</mapper>

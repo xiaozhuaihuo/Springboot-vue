@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.UserMsgMapper">
+    <resultMap id="result" type="UserMsgDomain">
+        <id property="msgId" column="MSG_ID"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="BILL_NO" property="billNo"/>
+        <result column="MSG_TYPE" property="msgType"/>
+        <result column="MSG_CONTENT" property="msgContent"/>
+        <result column="IS_READ" property="isRead"/>
+        <result column="CREATE_DATE" property="createDate"/>
+    </resultMap>
+    <sql id="table">
+    USER_MSG
+  </sql>
+    <sql id="columns">
+    MSG_ID,
+    USER_ID,
+    BILL_NO,
+    MSG_TYPE,
+    MSG_CONTENT,
+    IS_READ,
+    CREATE_DATE
+  </sql>
+    <insert id="add" parameterType="UserMsgDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{msgId,jdbcType=VARCHAR},
+            #{userId,jdbcType=VARCHAR},
+            #{billNo,jdbcType=VARCHAR},
+            #{msgType,jdbcType=VARCHAR},
+            #{msgContent,jdbcType=VARCHAR},
+            #{isRead,jdbcType=VARCHAR},
+            #{createDate,jdbcType=TIMESTAMP},
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="UserMsgDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="isRead != null ">IS_READ = #{isRead},</if>
+        </set>
+        where MSG_ID = #{msgId}
+    </update>
+    <select id="findOneById" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where MSG_ID = #{msgId}
+    </select>
+
+    <select id="find" parameterType="UserMsgCondition" resultMap="result">
+        select
+        <include refid="columns"/>
+        from
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+    </select>
+
+    <select id="count" parameterType="UserMsgCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+    </select>
+
+    <select id="countByMsgType" parameterType="UserMsgCondition" resultType="java.lang.Long">
+        select
+        count(*)
+        from
+        <include refid="table" />
+        <include refid="dynamicWhere" />
+        and IS_READ = '0' and MSG_TYPE in ('3','4') order by CREATE_DATE desc
+    </select>
+
+    <sql id="dynamicWhere">
+        <where>
+            1=1
+            <if test="userId != null and userId != '' ">AND USER_ID = #{userId}</if>
+            <if test="billNo != null and billNo != '' ">AND BILL_NO = #{billNo}</if>
+            <if test="msgType != null and msgType != '' ">AND MSG_TYPE = #{msgType}</if>
+            <if test="isRead != null and isRead != '' ">AND IS_READ = #{isRead}</if>
+        </where>
+    </sql>
+    <select id="countByUserId" resultType="Integer">
+        SELECT
+        count(*)
+        FROM
+        <include refid="table"/>
+        where USER_ID = #{userId} and IS_READ = '0'
+    </select>
+
+    <select id="findAllByUserId" parameterType="String" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where USER_ID = #{userId} and IS_READ = '0' and MSG_TYPE in ('0','1','2','5','6') order by CREATE_DATE desc
+    </select>
+
+    <select id="findAllByMsgType" parameterType="userMsgCondition" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        <include refid="dynamicWhere"/>
+        and IS_READ = '0' and MSG_TYPE in ('3','4') order by CREATE_DATE desc
+    </select>
+
+    <update id="updateStatusByUserId" parameterType="String">
+        update
+        <include refid="table"/>
+        set
+        IS_READ = '1'
+        where USER_ID = #{userId} and MSG_TYPE in ('0','1','2','5','6')
+    </update>
+</mapper>

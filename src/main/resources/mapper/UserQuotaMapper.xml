@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fengyaodong.bloan.dao.mapper.UserQuotaMapper">
+    <resultMap id="result" type="UserQuotaDomain">
+        <id property="userId" column="USER_ID"/>
+        <result column="LOAN_TOTAL_QUOTA" property="loanTotalQuota"/>
+        <result column="LOAN_USED_QUOTA" property="loanUsedQuota"/>
+        <result column="LOAN_SURPLUS_QUOTA" property="loanSurplusQuota"/>
+        <result column="APPLY_QUOTA_DATE" property="applyQuotaDate"/>
+        <result column="PROMOTE_QUOTA_DATE" property="promoteQuotaDate"/>
+    </resultMap>
+    <sql id="table">
+    USER_QUOTA
+  </sql>
+    <sql id="columns">
+    USER_ID,
+    LOAN_TOTAL_QUOTA,
+    LOAN_USED_QUOTA,
+    LOAN_SURPLUS_QUOTA,
+    APPLY_QUOTA_DATE,
+    PROMOTE_QUOTA_DATE
+  </sql>
+    <insert id="add" parameterType="UserQuotaDomain">
+        insert into
+        <include refid="table"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="columns"/>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{userId,jdbcType=VARCHAR},
+            #{loanTotalQuota,jdbcType=DECIMAL},
+            #{loanUsedQuota,jdbcType=DECIMAL},
+            #{loanSurplusQuota,jdbcType=DECIMAL},
+            #{applyQuotaDate,jdbcType=TIMESTAMP},
+            #{promoteQuotaDate,jdbcType=TIMESTAMP},
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="UserQuotaDomain">
+        update
+        <include refid="table"/>
+        <set>
+            <if test="loanTotalQuota != null ">LOAN_TOTAL_QUOTA = #{loanTotalQuota},</if>
+            <if test="loanUsedQuota != null ">LOAN_USED_QUOTA = #{loanUsedQuota},</if>
+            <if test="loanSurplusQuota != null ">LOAN_SURPLUS_QUOTA = #{loanSurplusQuota},</if>
+            <if test="applyQuotaDate != null ">APPLY_QUOTA_DATE = #{applyQuotaDate},</if>
+            <if test="promoteQuotaDate != null ">PROMOTE_QUOTA_DATE = #{promoteQuotaDate},</if>
+        </set>
+        where USER_ID = #{userId}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM
+        <include refid="table"/>
+        where USER_ID = #{userId}
+    </delete>
+    <select id="findOneById" resultMap="result">
+        SELECT
+        <include refid="columns"/>
+        FROM
+        <include refid="table"/>
+        where USER_ID = #{userId}
+    </select>
+</mapper>
